@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "serial.h"
+#include "vga.h"
 
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
@@ -12,156 +14,15 @@
 #error "This tutorial needs to be compiled with a ix86-elf compiler"
 #endif
 
-/* Hardware text mode color constants. */
-enum vga_color
-{
-	VGA_COLOR_BLACK = 0,
-	VGA_COLOR_BLUE = 1,
-	VGA_COLOR_GREEN = 2,
-	VGA_COLOR_CYAN = 3,
-	VGA_COLOR_RED = 4,
-	VGA_COLOR_MAGENTA = 5,
-	VGA_COLOR_BROWN = 6,
-	VGA_COLOR_LIGHT_GREY = 7,
-	VGA_COLOR_DARK_GREY = 8,
-	VGA_COLOR_LIGHT_BLUE = 9,
-	VGA_COLOR_LIGHT_GREEN = 10,
-	VGA_COLOR_LIGHT_CYAN = 11,
-	VGA_COLOR_LIGHT_RED = 12,
-	VGA_COLOR_LIGHT_MAGENTA = 13,
-	VGA_COLOR_LIGHT_BROWN = 14,
-	VGA_COLOR_WHITE = 15,
-};
-
-static inline uint8_t vga_entry_color(enum vga_color fg, enum vga_color bg)
-{
-	return fg | bg << 4;
-}
-
-static inline uint16_t vga_entry(unsigned char uc, uint8_t color)
-{
-	return (uint16_t)uc | (uint16_t)color << 8;
-}
-
-size_t strlen(const char *str)
-{
-	size_t len = 0;
-	while (str[len])
-		len++;
-	return len;
-}
-
-static const size_t VGA_WIDTH = 80;
-static const size_t VGA_HEIGHT = 25;
-
-size_t terminal_row;
-size_t terminal_column;
-uint8_t terminal_color;
-uint16_t *terminal_buffer;
-
-void terminal_initialize(void)
-{
-	terminal_row = 0;
-	terminal_column = 0;
-	terminal_color = vga_entry_color(VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
-	terminal_buffer = (uint16_t *)0xB8000;
-	for (size_t y = 0; y < VGA_HEIGHT; y++)
-	{
-		for (size_t x = 0; x < VGA_WIDTH; x++)
-		{
-			const size_t index = y * VGA_WIDTH + x;
-			terminal_buffer[index] = vga_entry(' ', terminal_color);
-		}
-	}
-}
-
-void terminal_setcolor(uint8_t color)
-{
-	terminal_color = color;
-}
-
-void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
-{
-	const size_t index = y * VGA_WIDTH + x;
-	terminal_buffer[index] = vga_entry(c, color);
-}
-
-bool is_full_screen()
-{
-	if (terminal_column + 1 == VGA_WIDTH && terminal_row + 1 == VGA_HEIGHT)
-		return true;
-
-	return false;
-}
-
-void shift_everything_up()
-{
-	uint16_t *buffer = (uint16_t *)0xB8000;
-
-	// replaces each character with the one right below it
-	for (size_t temp_row = 0; temp_row < VGA_HEIGHT; temp_row++) // y
-	{
-		for (size_t temp_col = 0; temp_col < VGA_WIDTH; temp_col++) // x
-		{
-			const size_t current_index = temp_row * VGA_WIDTH + temp_col;
-			const size_t replacement_index = ((temp_row + 1) * VGA_WIDTH) + temp_col;
-			buffer[current_index] = buffer[replacement_index];
-		}
-	}
-
-	// clean last line
-	for (size_t temp_col = 0; temp_col < VGA_WIDTH; temp_col++)
-	{
-		const size_t current_index = (VGA_HEIGHT - 1) * VGA_WIDTH + temp_col;
-		buffer[current_index] = vga_entry(' ', terminal_color);
-	}
-
-	terminal_column = 0;
-	terminal_row = VGA_HEIGHT - 1;
-}
-
-void terminal_putchar(char c)
-{
-
-	if (is_full_screen())
-	{
-		shift_everything_up();
-		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-	}
-	else
-	{
-		if (c == '\n')
-		{
-			terminal_column = 0;
-			terminal_row++;
-		}
-		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-		if (++terminal_column == VGA_WIDTH)
-		{
-			terminal_column = 0;
-			terminal_row++;
-		}
-	}
-}
-
-void terminal_write(const char *data, size_t size)
-{
-	for (size_t i = 0; i < size; i++)
-	{
-		terminal_putchar(data[i]);
-	}
-}
-
-void terminal_writestring(const char *data)
-{
-	terminal_write(data, strlen(data));
-}
-
 void kernel_main(void)
 {
-	/* Initialize terminal interface */
 	terminal_initialize();
 
-	/* Newline support is left as an exercise. */
-	terminal_writestring("Welcome to the kernel.\n This is happening on a new line wowwww.");
+	terminal_writestring("Welcome to the kernel.\nThis is happening on a new line wowwww.");
+	int init = init_serial();
+	write_serial('s');
+	write_serial('N');
+	write_serial('\n');
+	write_serial('u');
+	// terminal_writestring("In the tranquil expanse of the Pacific Northwest, where the towering firs weave a canopy above the winding trails, lies a hidden sanctuary known as Whispering Pines. This remote retreat, nestled against the backdrop of mist-laden mountains, is a place where time seems to slow and the soul finds solace in the rhythm of nature's gentle cadence. As dawn breaks over the horizon, a symphony of birdsong greets the awakening day, blending harmoniously with the soft rustle of leaves in the morning breeze. The air carries the faint scent of pine and earth, infused with the freshness of dew-kissed grass. Sunlight filters through the canopy above, casting dappled patterns of light and shadow on the forest floor. Trails meander through the woods, leading explorers past ancient cedar trees whose gnarled roots embrace the moss-covered ground. Occasionally, a glimpse of wildlife—a deer cautiously stepping into a sunlit glade, or a red-tailed hawk soaring overhead—reminds visitors that they are guests in a realm where the wild still holds sway. In the heart of Whispering Pines lies a crystal-clear lake, its surface shimmering like a mirror under the midday sun. Here, the silence is punctuated only by the gentle lapping of water against the shore and the occasional call of a loon. Fish dart beneath the surface, their movements creating ripples that expand and fade into the tranquil stillness. Come evening, as the sky blushes with hues of pink and gold, a chorus of frogs and crickets serenades the fading light. The first stars emerge overhead, their twinkling reflections mirrored in the lake's glassy surface. Around a crackling fire, stories are shared beneath a canopy of stars, weaving a tapestry of memories that linger long after the embers have turned to ash. Whispering Pines is more than a place—it is a sanctuary for the weary, a haven for the restless soul seeking respite from the frenetic pace of modern life. Here, amidst the timeless beauty of nature, one finds a profound connection to the earth and a sense of peace that transcends words.");
 }
