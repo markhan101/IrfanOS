@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
+
 /* Check if the compiler thinks you are targeting the wrong operating system. */
 #if defined(__linux__)
 #error "You are not using a cross-compiler, you will most certainly run into trouble"
@@ -86,37 +86,70 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = vga_entry(c, color);
 }
 
-void terminal_scroll()
+bool is_full_screen()
 {
+	if (terminal_column + 1 == VGA_WIDTH && terminal_row + 1 == VGA_HEIGHT)
+		return true;
 
-	const size_t buffer_size = (VGA_HEIGHT - 1) * VGA_WIDTH;
+	return false;
+}
 
-	// copy all; the info to the terminal_buffer
-	// multiplying by 2 to account fot the size_t as the terminal buffer points uint_16
-	memmove(terminal_buffer, terminal_buffer + VGA_WIDTH, buffer_size * 2);
+void shift_everything_up()
+{
+	uint16_t *buffer = (uint16_t *)0xB8000;
 
-	// clean the last row
-	for (size_t x = 0; x < VGA_WIDTH; x++)
+	// replaces each character with the one right below it
+	for (size_t temp_row = 0; temp_row < VGA_HEIGHT; temp_row++) // y
 	{
-		terminal_putentryat(' ', terminal_color, x, VGA_HEIGHT - 1);
+		for (size_t temp_col = 0; temp_col < VGA_WIDTH; temp_col++) // x
+		{
+			const size_t current_index = temp_row * VGA_WIDTH + temp_col;
+			const size_t replacement_index = ((temp_row + 1) * VGA_WIDTH) + temp_col;
+			buffer[current_index] = buffer[replacement_index];
+		}
 	}
+
+	// clean last line
+	for (size_t temp_col = 0; temp_col < VGA_WIDTH; temp_col++)
+	{
+		const size_t current_index = (VGA_HEIGHT - 1) * VGA_WIDTH + temp_col;
+		buffer[current_index] = vga_entry(' ', terminal_color);
+	}
+
+	terminal_column = 0;
+	terminal_row = VGA_HEIGHT - 1;
 }
 
 void terminal_putchar(char c)
 {
-	// terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-	// if (++terminal_column == VGA_WIDTH)
-	// {
-	// 	terminal_column = 0;
-	// 	if (++terminal_row == VGA_HEIGHT)
-	// 		terminal_row = 0;
-	// }
+
+	if (is_full_screen())
+	{
+		shift_everything_up();
+		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+	}
+	else
+	{
+		if (c == '\n')
+		{
+			terminal_column = 0;
+			terminal_row++;
+		}
+		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+		if (++terminal_column == VGA_WIDTH)
+		{
+			terminal_column = 0;
+			terminal_row++;
+		}
+	}
 }
 
 void terminal_write(const char *data, size_t size)
 {
 	for (size_t i = 0; i < size; i++)
+	{
 		terminal_putchar(data[i]);
+	}
 }
 
 void terminal_writestring(const char *data)
@@ -130,5 +163,5 @@ void kernel_main(void)
 	terminal_initialize();
 
 	/* Newline support is left as an exercise. */
-	terminal_writestring("Hello, kernel World!\n");
+	terminal_writestring("Welcome to the kernel.\n This is happening on a new line wowwww.");
 }
