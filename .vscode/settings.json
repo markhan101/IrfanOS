@@ -3,6 +3,8 @@
         "*.tsx": "typescriptreact",
         "gdt.h": "c",
         "stdint.h": "c",
-        "stdint-gcc.h": "c"
+        "stdint-gcc.h": "c",
+        "serial.h": "c",
+        "vga.h": "c"
     }
 }
