@@ -9,6 +9,11 @@ AS = i686-elf-as
 # Flags
 CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra
 LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
+LIBS = -lgcc
+
+# List of source files
+SRCS = kernel.c serial.c vga.c gdt.c
+OBJS = $(SRCS:.c=.o)
 ASFLAGS =
 
 # Directories
@@ -58,10 +63,23 @@ $(BIN_DIR)/vga.o: $(DRIVERS_DIR)/vga.c
 $(BIN_DIR)/gdt.o: $(SYS_DIR)/gdt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+
+# gdt.o: gdt.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+#gdt.o depends on gdt.c and a function in gdt.c depends on gdt.s
+
+gdt.o: gdt.c gdt.s
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+
 # Assemble boot.s
 $(BOOT_OBJ): boot.s
 	$(AS) $(ASFLAGS) $< -o $@
 
 # Clean up
+
+
 clean:
 	rm -f $(BIN_DIR)/*.o $(BIN_DIR)/$(BIN)
