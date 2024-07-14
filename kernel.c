@@ -19,7 +19,7 @@ void kernel_main(void)
 	terminal_initialize();
 
 	terminal_writestring("Welcome to the kernel.\nThis is happening on a new line wowwww.");
-	int init = init_serial();
+	init_serial();
 	write_serial('s');
 	write_serial('N');
 	write_serial('\n');

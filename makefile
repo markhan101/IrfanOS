@@ -38,7 +38,7 @@ LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
 LIBS = -lgcc
 
 # List of source files
-SRCS = kernel.c serial.c vga.c
+SRCS = kernel.c serial.c vga.c gdt.c
 OBJS = $(SRCS:.c=.o)
 
 # Default target
@@ -56,8 +56,21 @@ vga.o: vga.c
 boot.o: boot.s
 	$(CC) -c $< -o $@ $(CFLAGS)
 
+
+# gdt.o: gdt.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+#gdt.o depends on gdt.c and a function in gdt.c depends on gdt.s
+
+gdt.o: gdt.c gdt.s
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+
 myos.bin: boot.o $(OBJS)
 	$(LD) $(LDFLAGS) $^ $(LIBS) -o $@
+
+
 
 clean:
 	rm -f *.o myos.bin
