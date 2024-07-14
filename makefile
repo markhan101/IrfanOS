@@ -1,7 +1,7 @@
-# # #i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
-# # #i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
+# #i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+# #i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
 
-# Toolchain
+
 CC = i686-elf-gcc
 LD = i686-elf-gcc
 AS = i686-elf-as
@@ -63,13 +63,7 @@ $(BIN_DIR)/vga.o: $(DRIVERS_DIR)/vga.c
 $(BIN_DIR)/gdt.o: $(SYS_DIR)/gdt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-
-# gdt.o: gdt.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-#gdt.o depends on gdt.c and a function in gdt.c depends on gdt.s
-
-gdt.o: gdt.c gdt.s
+gdt.o: gdt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
