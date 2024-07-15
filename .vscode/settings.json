@@ -5,6 +5,7 @@
         "stdint.h": "c",
         "stdint-gcc.h": "c",
         "serial.h": "c",
-        "vga.h": "c"
+        "vga.h": "c",
+        "stddef.h": "c"
     }
 }
