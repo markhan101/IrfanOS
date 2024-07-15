@@ -6,7 +6,7 @@ struct GDT_Locator gdt_ptr;
 static inline void GDT_FLUSH_AND_LOAD()
 {
     gdt_ptr.limit_ptr = ((sizeof(struct GDT_Entry) * 3) - 1);
-    gdt_ptr.base_ptr = (uint32_t) &gdt_segs;
+    gdt_ptr.base_ptr = (uint32_t)&gdt_segs;
     asm volatile("lgdt (%0)" : : "r"(&gdt_ptr));
     asm volatile("mov $0x10, %%ax; \
                   mov %%ax, %%ds; \

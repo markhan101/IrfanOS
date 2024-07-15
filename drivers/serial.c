@@ -58,9 +58,11 @@ int is_transmit_empty()
 
 void write_serial(char *msg)
 {
-    while (is_transmit_empty() == 0);
-    
-    while (msg) {
+    while (is_transmit_empty() == 0)
+        ;
+
+    while (msg)
+    {
         outb(PORT, *msg);
         msg++;
     }
