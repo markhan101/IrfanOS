@@ -61,6 +61,7 @@ void write_serial(char *msg)
     while (is_transmit_empty() == 0);
     
     while (msg) {
-        outb(PORT, *msg++);
+        outb(PORT, *msg);
+        msg++;
     }
 }
