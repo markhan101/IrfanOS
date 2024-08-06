@@ -1,6 +1,86 @@
-# #i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
-# #i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
+# # #i686-elf-gcc -c kernel.c -o kernel.o -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+# # #i686-elf-gcc -T linker.ld -o myos.bin -ffreestanding -O2 -nostdlib boot.o kernel.o -lgcc
 
+
+# CC = i686-elf-gcc
+# LD = i686-elf-gcc
+# AS = i686-elf-as
+
+# # Flags
+# CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra
+# LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
+# LIBS = -lgcc
+
+# # List of source files
+# SRCS = kernel.c serial.c vga.c gdt.c
+# OBJS = $(SRCS:.c=.o)
+# ASFLAGS =
+
+# # Directories
+# BIN_DIR = bin
+# DRIVERS_DIR = drivers
+# SYS_DIR = sys
+
+# # Source files
+# KERNEL_SRC = kernel.c
+# DRIVERS_SRC = $(DRIVERS_DIR)/serial.c $(DRIVERS_DIR)/vga.c
+# SYS_SRC = $(SYS_DIR)/gdt.c
+
+# # Object files
+# KERNEL_OBJ = $(BIN_DIR)/kernel.o
+# DRIVERS_OBJ = $(BIN_DIR)/serial.o $(BIN_DIR)/vga.o
+# SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/gdts.o
+# BOOT_OBJ = $(BIN_DIR)/boot.o
+
+# # All object files
+# OBJS = $(BOOT_OBJ) $(KERNEL_OBJ) $(DRIVERS_OBJ) $(SYS_OBJ)
+
+# # Binary output
+# BIN = myos.bin
+
+# # Phony targets
+# .PHONY: all clean
+
+# # Default target
+# all: $(BIN_DIR)/$(BIN)
+
+# # Link the kernel
+# $(BIN_DIR)/$(BIN): $(OBJS)
+# 	$(LD) $(LDFLAGS) -o $@ $(OBJS) -lgcc
+
+# # Compile the kernel
+# $(KERNEL_OBJ): $(KERNEL_SRC)
+# 	$(CC) $(CFLAGS) -c $< -o $@
+
+# # Compile the drivers
+# $(BIN_DIR)/serial.o: $(DRIVERS_DIR)/serial.c
+# 	$(CC) $(CFLAGS) -c $< -o $@
+
+# $(BIN_DIR)/vga.o: $(DRIVERS_DIR)/vga.c
+# 	$(CC) $(CFLAGS) -c $< -o $@
+
+# # Compile the system files
+# $(BIN_DIR)/gdt.o: $(SYS_DIR)/gdt.c
+# 	$(CC) $(CFLAGS) -c $< -o $@
+
+# $(BIN_DIR)/gdts.o: $(SYS_DIR)/gdt.s
+# 	$(AS) $(ASFLAGS) $< -o $@
+
+
+# gdt.o: gdt.c
+# 	$(CC) $(CFLAGS) -c $< -o $@
+
+# # Assemble boot.s
+# $(BOOT_OBJ): boot.s
+# 	$(AS) $(ASFLAGS) $< -o $@
+
+# # Clean up
+# clean:
+# 	rm -f $(BIN_DIR)/*.o $(BIN_DIR)/$(BIN)
+
+
+# #qemu-system-i386 -kernel bin/myos.bin -d int -serial stdio
+# #run command
 
 CC = i686-elf-gcc
 LD = i686-elf-gcc
@@ -11,29 +91,30 @@ CFLAGS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra
 LDFLAGS = -T linker.ld -ffreestanding -O2 -nostdlib
 LIBS = -lgcc
 
-# List of source files
-SRCS = kernel.c serial.c vga.c gdt.c
-OBJS = $(SRCS:.c=.o)
-ASFLAGS =
-
 # Directories
 BIN_DIR = bin
 DRIVERS_DIR = drivers
 SYS_DIR = sys
+UTILS_DIR = utils
 
 # Source files
 KERNEL_SRC = kernel.c
 DRIVERS_SRC = $(DRIVERS_DIR)/serial.c $(DRIVERS_DIR)/vga.c
-SYS_SRC = $(SYS_DIR)/gdt.c
+SYS_SRC = $(SYS_DIR)/gdt.c $(SYS_DIR)/idt.c
+UTILS_SRC = $(UTILS_DIR)/io.c $(UTILS_DIR)/string.c
+
+# Assembly source files
+SYS_ASM_SRC = $(SYS_DIR)/gdt.s $(SYS_DIR)/idt.s
 
 # Object files
 KERNEL_OBJ = $(BIN_DIR)/kernel.o
 DRIVERS_OBJ = $(BIN_DIR)/serial.o $(BIN_DIR)/vga.o
-SYS_OBJ = $(BIN_DIR)/gdt.o
+SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/gdts.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o
+UTILS_OBJ = $(BIN_DIR)/io.o $(BIN_DIR)/string.o
 BOOT_OBJ = $(BIN_DIR)/boot.o
 
 # All object files
-OBJS = $(BOOT_OBJ) $(KERNEL_OBJ) $(DRIVERS_OBJ) $(SYS_OBJ)
+OBJS = $(BOOT_OBJ) $(KERNEL_OBJ) $(DRIVERS_OBJ) $(SYS_OBJ) $(UTILS_OBJ)
 
 # Binary output
 BIN = myos.bin
@@ -46,7 +127,7 @@ all: $(BIN_DIR)/$(BIN)
 
 # Link the kernel
 $(BIN_DIR)/$(BIN): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) -lgcc
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 # Compile the kernel
 $(KERNEL_OBJ): $(KERNEL_SRC)
@@ -63,17 +144,31 @@ $(BIN_DIR)/vga.o: $(DRIVERS_DIR)/vga.c
 $(BIN_DIR)/gdt.o: $(SYS_DIR)/gdt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-gdt.o: gdt.c
+$(BIN_DIR)/idt.o: $(SYS_DIR)/idt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Assemble the system assembly files
+$(BIN_DIR)/gdts.o: $(SYS_DIR)/gdt.s
+	$(AS) $(ASFLAGS) $< -o $@
 
+$(BIN_DIR)/idts.o: $(SYS_DIR)/idt.asm
+	$(AS) $(ASFLAGS) $< -o $@
+
+# Compile the utility files
+$(BIN_DIR)/io.o: $(UTILS_DIR)/io.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR)/string.o: $(UTILS_DIR)/string.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Assemble boot.s
 $(BOOT_OBJ): boot.s
 	$(AS) $(ASFLAGS) $< -o $@
 
 # Clean up
-
-
 clean:
 	rm -f $(BIN_DIR)/*.o $(BIN_DIR)/$(BIN)
+
+# Run QEMU
+run: all
+	qemu-system-i386 -kernel $(BIN_DIR)/$(BIN) -d int -serial stdio

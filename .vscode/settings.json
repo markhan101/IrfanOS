@@ -6,6 +6,9 @@
         "stdint-gcc.h": "c",
         "serial.h": "c",
         "vga.h": "c",
-        "stddef.h": "c"
-    }
+        "stddef.h": "c",
+        "stdbool.h": "c",
+        "idt.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

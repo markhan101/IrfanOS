@@ -18,7 +18,7 @@ THere are 3 memory models to implement this.
 */
 
 /*
-The GST in the flate memory model must consist of Data Segment Descriptor and a Code Segment Descriptor.
+The GST in the flat memory model must consist of Data Segment Descriptor and a Code Segment Descriptor.
 Using the Flat model means that we treat memory as a snigle contiguous address space i.e. a long big chunk of memory.
 This means that we will assume the chuck starts from 0 and goes onto whatever.
 */
@@ -43,7 +43,7 @@ struct GDT_Locator
     uint16_t limit_ptr;
 } __attribute__((packed));
 
-void GDT_INIT();
+void INIT_GDT();
 void SET_GDT_GATE(uint32_t entry_num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity);
 
 #endif
