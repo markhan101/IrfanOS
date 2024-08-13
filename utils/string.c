@@ -9,3 +9,7 @@ void memset(void *arr, size_t size, uint32_t value)
         array[i] = value;
     }
 }
+
+char *itoa(int value, char *buffer)
+{
+}
