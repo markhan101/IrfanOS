@@ -8,7 +8,9 @@
         "vga.h": "c",
         "stddef.h": "c",
         "stdbool.h": "c",
-        "idt.h": "c"
+        "idt.h": "c",
+        "string.h": "c",
+        "intreg.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
