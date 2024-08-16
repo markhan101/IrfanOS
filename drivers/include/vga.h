@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include "../../utils/include/string.h"
 
 // VGA color constants
 enum vga_color
@@ -33,7 +34,7 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y);
 void terminal_putchar(char c);
 void terminal_write(const char *data, size_t size);
 void terminal_writestring(const char *data);
-void terminal_writeint(int num);
+void terminal_writeint(int num, int base);
 void terminal_scroll();
 bool is_terminal_filled();
 #endif // VGA_H

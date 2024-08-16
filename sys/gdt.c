@@ -43,7 +43,7 @@ void SET_GDT_GATE(uint32_t entry_num, uint32_t base, uint32_t limit, uint8_t acc
 {
     gdt_entries[entry_num].base_low = base & 0xFFFF;
     gdt_entries[entry_num].base_middle = (base >> 16) & 0xFF;
-    gdt_entries[entry_num].base_high = (base >> 24) & 0xFF;
+    gdt_entries[entry_num].base_high_gdt = (base >> 24) & 0xFF;
 
     gdt_entries[entry_num].limit = limit & 0XFFFF;
 

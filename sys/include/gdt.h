@@ -34,7 +34,7 @@ struct GDT_Entry
     uint8_t base_middle;
     uint8_t access;
     uint8_t flags_and_limit_high;
-    uint8_t base_high;
+    uint8_t base_high_gdt;
 } __attribute__((packed));
 
 struct GDT_Locator

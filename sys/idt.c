@@ -134,62 +134,10 @@ void ISR_HANDLER(struct InterruptRegisters *r)
 {
     if (r->int_no < 32)
     {
-        // terminal_writestring("\n\n*** [Kernel panic - %s Exception] ***\nInterrupt error code %u\nedi: %x esi: %u ebp: %u esp: %u\nebx: %u edx: %u ecx: %u eax: %u\neip: %x cs:%x eflags: %x ss: %x\ngs: %x fs: %x es: %x ds: %x\nHalting!\n",
-        //        exception_messages[r->int_no],
-        //        r->err_code,
-        //        r->edi,
-        //        r->esi,
-        //        r->ebp,
-        //        r->esp,
-        //        r->ebx,
-        //        r->edx,
-        //        r->ecx,
-        //        r->eax,
-        //        r->eip,
-        //        r->cs,
-        //        r->eflags,
-        //        r->ss,
-        //        r->gs,
-        //        r->fs,
-        //        r->es,
-        //        r->ds);
 
         terminal_writestring("\n\n*** [Kernel panic - ");
         terminal_writestring(exception_messages[r->int_no]);
-        // terminal_writestring(" Exception] ***\nInterrupt error code ");
-        // terminal_writeint(r->err_code);
-        // terminal_writestring("\nedi: ");
-        // terminal_writeint(r->edi);
-        // terminal_writestring(" esi: ");
-        // terminal_writeint(r->esi);
-        // terminal_writestring(" ebp: ");
-        // terminal_writeint(r->ebp);
-        // terminal_writestring(" esp: ");
-        // terminal_writeint(r->esp);
-        // terminal_writestring("\nebx: ");
-        // terminal_writeint(r->ebx);
-        // terminal_writestring(" edx: ");
-        // terminal_writeint(r->edx);
-        // terminal_writestring(" ecx: ");
-        // terminal_writeint(r->ecx);
-        // terminal_writestring(" eax: ");
-        // terminal_writeint(r->eax);
-        // terminal_writestring("\neip: ");
-        // terminal_writeint(r->eip);
-        // terminal_writestring(" cs: ");
-        // terminal_writeint(r->cs);
-        // terminal_writestring(" eflags: ");
-        // terminal_writeint(r->eflags);
-        // terminal_writestring(" ss: ");
-        // terminal_writeint(r->ss);
-        // terminal_writestring("\ngs: ");
-        // terminal_writeint(r->gs);
-        // terminal_writestring(" fs: ");
-        // terminal_writeint(r->fs);
-        // terminal_writestring(" es: ");
-        // terminal_writeint(r->es);
-        // terminal_writestring(" ds: ");
-        // terminal_writeint(r->ds);
+        terminal_writestring(" Exception] ***\nInterrupt error code ");
         terminal_writestring("\nHalting!\n");
 
         for (;;)

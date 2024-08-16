@@ -119,3 +119,10 @@ void terminal_writestring(const char *data)
 {
     terminal_write(data, strlen(data));
 }
+
+void terminal_writeint(int num, int base)
+{
+    char num_str[33];
+    itoa(num, num_str, base);
+    terminal_writestring(num_str);
+}

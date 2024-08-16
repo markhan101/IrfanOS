@@ -19,7 +19,7 @@ UTILS_DIR = utils
 # Source files
 KERNEL_SRC = kernel.c
 DRIVERS_SRC = $(DRIVERS_DIR)/serial.c $(DRIVERS_DIR)/vga.c
-SYS_SRC = $(SYS_DIR)/gdt.c $(SYS_DIR)/idt.c
+SYS_SRC = $(SYS_DIR)/gdt.c $(SYS_DIR)/idt.c $(SYS_DIR)/timer.c
 UTILS_SRC = $(UTILS_DIR)/io.c $(UTILS_DIR)/string.c
 
 # Assembly source files
@@ -28,7 +28,7 @@ SYS_ASM_SRC = $(SYS_DIR)/gdt.s $(SYS_DIR)/idt.s
 # Object files
 KERNEL_OBJ = $(BIN_DIR)/kernel.o
 DRIVERS_OBJ = $(BIN_DIR)/serial.o $(BIN_DIR)/vga.o
-SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/gdts.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o
+SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/gdts.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o $(BIN_DIR)/timer.o
 UTILS_OBJ = $(BIN_DIR)/io.o $(BIN_DIR)/string.o
 BOOT_OBJ = $(BIN_DIR)/boot.o
 
@@ -64,6 +64,9 @@ $(BIN_DIR)/gdt.o: $(SYS_DIR)/gdt.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BIN_DIR)/idt.o: $(SYS_DIR)/idt.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR)/timer.o: $(SYS_DIR)/timer.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Assemble the system assembly files
