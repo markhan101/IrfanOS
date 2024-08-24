@@ -2,30 +2,7 @@
 #define GDT_H
 
 #include <stdint.h>
-
-/*
-The GDT (Global Descriptor Table is used to switch the kwernel to protected mode. This is crucial to handle different operations which
-should be limited to the OS.
-*/
-
-/*
-The GDT consists of Descriptors which are essentially used to describe the properties of a segment using a list.
-THere are 3 memory models to implement this.
-
-1. Paging (most common in modern systems)
-2. Flat Memory Model (will be implemnted in this OS)
-3. Segmentation (almost obsolete in modern systems)
-*/
-
-/*
-The GST in the flat memory model must consist of Data Segment Descriptor and a Code Segment Descriptor.
-Using the Flat model means that we treat memory as a snigle contiguous address space i.e. a long big chunk of memory.
-This means that we will assume the chuck starts from 0 and goes onto whatever.
-*/
-
-/*
-Each segment descriptor will have a LIMIT (segment size) and a BASE (starting location) address to go from.
-*/
+#include "../../drivers/include/serial.h"
 
 struct GDT_Entry
 {

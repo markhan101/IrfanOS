@@ -1,6 +1,8 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
+#include "../../utils/include/io.h"
+
 #define PORT 0x3f8 // COM1
 
 int init_serial();

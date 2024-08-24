@@ -24,8 +24,8 @@ void kernel_main(void)
 
 	init_serial();
 	write_serial("SERIAL OUTPUT ENABLED...\n");
-	// TODO FIX ORDER CHANGE ISSUE
-	// INIT_GDT();
+	//  TODO FIX ORDER CHANGE ISSUE
+	INIT_GDT();
 	// write_serial("GDT CONFIGURED AND ENABLED...\n");
 
 	// INIT_IDT();

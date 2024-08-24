@@ -1,5 +1,4 @@
 #include "include/serial.h"
-#include "../utils/include/io.h"
 
 int init_serial()
 {
@@ -48,7 +47,7 @@ void write_serial(char *msg)
     while (is_transmit_empty() == 0)
         ;
 
-    while (msg)
+    while (*msg)
     {
         outPort_B(PORT, *msg);
         msg++;
