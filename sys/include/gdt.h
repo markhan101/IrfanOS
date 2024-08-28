@@ -10,14 +10,14 @@ struct GDT_Entry
     uint16_t base_low;
     uint8_t base_middle;
     uint8_t access;
-    uint8_t flags_and_limit_high;
+    uint8_t granularity;
     uint8_t base_high_gdt;
 } __attribute__((packed));
 
 struct GDT_Locator
 {
-    uint32_t base_ptr;
     uint16_t limit_ptr;
+    uint32_t base_ptr;
 } __attribute__((packed));
 
 void INIT_GDT();
