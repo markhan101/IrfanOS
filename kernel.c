@@ -26,17 +26,17 @@ void kernel_main(void)
 	write_serial("SERIAL OUTPUT ENABLED...\n");
 	//  TODO FIX ORDER CHANGE ISSUE
 	INIT_GDT();
-	// write_serial("GDT CONFIGURED AND ENABLED...\n");
+	write_serial("GDT CONFIGURED AND ENABLED...\n");
 
-	// INIT_IDT();
-	// write_serial("IDT CONFIGURED AND ENABLED...\n");
+	INIT_IDT();
+	write_serial("IDT CONFIGURED AND ENABLED...\n");
 
-	// INIT_ISR();
-	// write_serial("ISR CONFIGURED AND ENABLED...\n");
+	INIT_ISR();
+	write_serial("ISR CONFIGURED AND ENABLED...\n");
 
-	// INIT_IRQ();
-	// write_serial("IRQ CONFIGURED AND ENABLED...\n");
+	INIT_IRQ();
+	write_serial("IRQ CONFIGURED AND ENABLED...\n");
 
-	// INIT_TIMER();
-	// write_serial("TIMER CONFIGURED AND ENABLED...\n");
+	INIT_TIMER();
+	write_serial("TIMER CONFIGURED AND ENABLED...\n");
 }

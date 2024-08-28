@@ -13,7 +13,7 @@
 #define CH_2_RW 0x42
 #define MODE_CMD_W 0x43 // MODE/COMMAND REGISTER WRITE
 
-#define TIMER_FREQ 100
+#define TIMER_FREQ 1000
 
 void INIT_TIMER();
 void SET_IRQ_0(struct InterruptRegisters *r);

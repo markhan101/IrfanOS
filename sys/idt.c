@@ -17,8 +17,6 @@ void SET_IDT_GATE(uint8_t entry_num, uint32_t base, uint16_t sel, uint8_t flags)
 
 void INIT_IDT()
 {
-
-    terminal_writestring("Initializing IDT...\n");
     idt_ptr.base_ptr = (uint32_t)&idt_entries;
     idt_ptr.limit = (sizeof(struct IDT_Entry) * IDT_SIZE) - 1; // subtract 1 to get to the proper address which originally will have an offset of 1
 
