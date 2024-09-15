@@ -12,6 +12,7 @@ void INIT_TIMER()
 {
     ticks = 0;
     IRQ_INIT_HANDLER(0, &SET_IRQ_0);
+    write_serial("Timer sent to handler\n");
 
     uint32_t divisor = 1193182 / TIMER_FREQ;
 
