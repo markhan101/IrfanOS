@@ -31,12 +31,9 @@ void kernel_main(void)
 	INIT_IDT();
 	write_serial("IDT CONFIGURED AND ENABLED...\n");
 
-	INIT_ISR();
-	write_serial("ISR CONFIGURED AND ENABLED...\n");
+	int a = 1 / 0;
 
-	INIT_IRQ();
-	write_serial("IRQ CONFIGURED AND ENABLED...\n");
+	a = a - 1;
 
-	INIT_TIMER();
-	write_serial("TIMER CONFIGURED AND ENABLED...\n");
+	terminal_writeint(a, 10);
 }

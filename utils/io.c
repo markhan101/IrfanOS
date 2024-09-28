@@ -14,3 +14,8 @@ uint8_t inPort_B(uint16_t port)
                      : "memory");
     return ret;
 }
+
+void io_Wait()
+{
+    outPort_B(0x80, 0);
+}

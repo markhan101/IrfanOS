@@ -7,6 +7,7 @@ static inline void GDT_FLUSH_AND_LOAD()
 {
     gdt_ptr.limit_ptr = ((sizeof(struct GDT_Entry) * 3) - 1);
     gdt_ptr.base_ptr = (uint32_t)&gdt_segs;
+    asm volatile("cli");
     asm volatile("lgdt %0" : : "m"(gdt_ptr) : "memory");
     asm volatile("mov $0x10, %%ax; \
                   mov %%ax, %%ds; \
@@ -15,6 +16,14 @@ static inline void GDT_FLUSH_AND_LOAD()
                   mov %%ax, %%gs; \
                   ljmp $0x08, $next; \
                   next:" : : : "eax");
+    asm volatile("sti");
+
+    write_serial("GDT LIMIT PTR: ");
+    write_serial_hex(gdt_ptr.limit_ptr);
+    write_serial("\n");
+    write_serial("GDT BASE PTR: ");
+    write_serial_hex(gdt_ptr.base_ptr);
+    write_serial("\n");
 }
 
 void INIT_GDT()
@@ -26,7 +35,7 @@ void INIT_GDT()
 
     // TODO: Setup TASK MANAGEMENT
 
-        GDT_FLUSH_AND_LOAD();
+    GDT_FLUSH_AND_LOAD();
 }
 
 void SET_GDT_GATE(uint32_t entry_num, uint32_t base, uint32_t limit, uint8_t access, uint8_t granularity)

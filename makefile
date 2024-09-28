@@ -28,7 +28,8 @@ SYS_ASM_SRC = $(SYS_DIR)/gdt.s $(SYS_DIR)/idt.s
 # Object files
 KERNEL_OBJ = $(BIN_DIR)/kernel.o
 DRIVERS_OBJ = $(BIN_DIR)/serial.o $(BIN_DIR)/vga.o
-SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/gdts.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o $(BIN_DIR)/timer.o
+SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o 
+#$(BIN_DIR)/timer.o
 UTILS_OBJ = $(BIN_DIR)/io.o $(BIN_DIR)/string.o
 BOOT_OBJ = $(BIN_DIR)/boot.o
 
@@ -70,11 +71,11 @@ $(BIN_DIR)/timer.o: $(SYS_DIR)/timer.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Assemble the system assembly files
-$(BIN_DIR)/gdts.o: $(SYS_DIR)/gdt.s
-	$(AS) $(ASFLAGS) $< -o $@
 
-$(BIN_DIR)/idts.o: $(SYS_DIR)/idt.s
-	$(AS) $(ASFLAGS) $< -o $@
+bin/idts.o: sys/idt.s
+	nasm -f elf32 sys/idt.s -o bin/idts.o
+
+
 
 # Compile the utility files
 $(BIN_DIR)/io.o: $(UTILS_DIR)/io.c

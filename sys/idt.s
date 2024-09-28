@@ -1,391 +1,93 @@
-.section .text
-
-.global IDT_FLUSH_AND_LOAD
-.extern idt_ptr
-
-IDT_FLUSH_AND_LOAD:
-    lidt idt_ptr
-    ret
-
-.global isr0
-.global isr1
-.global isr2
-.global isr3
-.global isr4
-.global isr5
-.global isr6
-.global isr7
-.global isr8
-.global isr9
-.global isr10
-.global isr11
-.global isr12
-.global isr13
-.global isr14
-.global isr15
-.global isr16
-.global isr17
-.global isr18
-.global isr19
-.global isr20
-.global isr21
-.global isr22
-.global isr23
-.global isr24
-.global isr25
-.global isr26
-.global isr27
-.global isr28
-.global isr29
-.global isr30
-.global isr31
-
-# Interrupt service routine exceptions
-isr0:
-    cli
-    push $0
-    push $0
-    jmp isr_common_stub
-
-isr1:
-    cli
-    push $0
-    push $1
-    jmp isr_common_stub
-
-isr2:
-    cli
-    push $0
-    push $2
-    jmp isr_common_stub
-
-isr3:
-    cli
-    push $0
-    push $3
-    jmp isr_common_stub
-
-isr4:
-    cli
-    push $0
-    push $4
-    jmp isr_common_stub
-
-isr5:
-    cli
-    push $0
-    push $5
-    jmp isr_common_stub
-
-isr6:
-    cli
-    push $0
-    push $6
-    jmp isr_common_stub
-
-isr7:
-    cli
-    push $0
-    push $7
-    jmp isr_common_stub
-
-isr8:
-    cli
-    push $8
-    jmp isr_common_stub
-
-isr9:
-    cli
-    push $0
-    push $9
-    jmp isr_common_stub
-
-isr10:
-    cli
-    push $10
-    jmp isr_common_stub
-
-isr11:
-    cli
-    push $11
-    jmp isr_common_stub
-
-isr12:
-    cli
-    push $12
-    jmp isr_common_stub
-
-isr13:
-    cli
-    push $13
-    jmp isr_common_stub
-
-isr14:
-    cli
-    push $14
-    jmp isr_common_stub
-
-isr15:
-    cli
-    push $0
-    push $15
-    jmp isr_common_stub
-
-isr16:
-    cli
-    push $0
-    push $16
-    jmp isr_common_stub
-
-isr17:
-    cli
-    push $0
-    push $17
-    jmp isr_common_stub
-
-isr18:
-    cli
-    push $0
-    push $18
-    jmp isr_common_stub
-
-isr19:
-    cli
-    push $0
-    push $19
-    jmp isr_common_stub
-
-isr20:
-    cli
-    push $0
-    push $20
-    jmp isr_common_stub
-
-isr21:
-    cli
-    push $0
-    push $21
-    jmp isr_common_stub
-
-isr22:
-    cli
-    push $0
-    push $22
-    jmp isr_common_stub
-
-isr23:
-    cli
-    push $0
-    push $23
-    jmp isr_common_stub
-
-isr24:
-    cli
-    push $0
-    push $24
-    jmp isr_common_stub
-
-isr25:
-    cli
-    push $0
-    push $25
-    jmp isr_common_stub
-
-isr26:
-    cli
-    push $0
-    push $26
-    jmp isr_common_stub
-
-isr27:
-    cli
-    push $0
-    push $27
-    jmp isr_common_stub
-
-isr28:
-    cli
-    push $0
-    push $28
-    jmp isr_common_stub
-
-isr29:
-    cli
-    push $0
-    push $29
-    jmp isr_common_stub
-
-isr30:
-    cli
-    push $0
-    push $30
-    jmp isr_common_stub
-
-isr31:
-    cli
-    push $0
-    push $31
-    jmp isr_common_stub
-
-.extern ISR_HANDLER
-
-isr_common_stub:
-    pusha
-    push %ds
-    push %es
-    push %fs
-    push %gs
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-    mov %esp, %eax
-    push %eax
-    call *ISR_HANDLER
-    pop %eax
-    pop %gs
-    pop %fs
-    pop %es
-    pop %ds
-    popa
-    add $8, %esp
+; Define macros for ISR stubs
+%macro isr_err_stub 1
+isr_stub_%+%1:
+    call EXCEPTION_HANDLER
     iret
+%endmacro
 
-.global irq0
-.global irq1
-.global irq2
-.global irq3
-.global irq4
-.global irq5
-.global irq6
-.global irq7
-.global irq8
-.global irq9
-.global irq10
-.global irq11
-.global irq12
-.global irq13
-.global irq14
-.global irq15
-
-irq0:
-    cli
-    push $0
-    push $32
-    jmp irq_common_stub
-
-irq1:
-    cli
-    push $0
-    push $33
-    jmp irq_common_stub
-
-irq2:
-    cli
-    push $0
-    push $34
-    jmp irq_common_stub
-
-irq3:
-    cli
-    push $0
-    push $35
-    jmp irq_common_stub
-
-irq4:
-    cli
-    push $0
-    push $36
-    jmp irq_common_stub
-
-irq5:
-    cli
-    push $0
-    push $37
-    jmp irq_common_stub
-
-irq6:
-    cli
-    push $0
-    push $38
-    jmp irq_common_stub
-
-irq7:
-    cli
-    push $0
-    push $39
-    jmp irq_common_stub
-
-irq8:
-    cli
-    push $0
-    push $40
-    jmp irq_common_stub
-
-irq9:
-    cli
-    push $0
-    push $41
-    jmp irq_common_stub
-
-irq10:
-    cli
-    push $0
-    push $42
-    jmp irq_common_stub
-
-irq11:
-    cli
-    push $0
-    push $43
-    jmp irq_common_stub
-
-irq12:
-    cli
-    push $0
-    push $44
-    jmp irq_common_stub
-
-irq13:
-    cli
-    push $0
-    push $45
-    jmp irq_common_stub
-
-irq14:
-    cli
-    push $0
-    push $46
-    jmp irq_common_stub
-
-irq15:
-    cli
-    push $0
-    push $47
-    jmp irq_common_stub
-
-.extern IRQ_HANDLER
-
-irq_common_stub:
-    pusha
-    push %ds
-    push %es
-    push %fs
-    push %gs
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-    mov %esp, %eax
-    push %eax
-    call *IRQ_HANDLER
-    pop %eax
-    pop %gs
-    pop %fs
-    pop %es
-    pop %ds
-    popa
-    add $8, %esp
+%macro isr_no_err_stub 1
+isr_stub_%+%1:
+    push word %1
+    push dword isr_msg_%+%1
+    call EXCEPTION_HANDLER
     iret
+%endmacro
+
+extern EXCEPTION_HANDLER  ; Declare the external exception handler
+
+section .data
+isr_msg_0 db "Divide by Zero", 0
+isr_msg_1 db "Debug", 0
+isr_msg_2 db "Non Maskable Interrupt", 0
+isr_msg_3 db "Breakpoint", 0
+isr_msg_4 db "Into Detected Overflow", 0
+isr_msg_5 db "Out of Bounds", 0
+isr_msg_6 db "Invalid Opcode", 0
+isr_msg_7 db "No Coprocessor", 0
+isr_msg_8 db "Double Fault", 0
+isr_msg_9 db "Coprocessor Segment Overrun", 0
+isr_msg_10 db "Bad TSS", 0
+isr_msg_11 db "Segment Not Present", 0
+isr_msg_12 db "Stack Fault", 0
+isr_msg_13 db "General Protection Fault", 0
+isr_msg_14 db "Page Fault", 0
+isr_msg_15 db "Unknown Interrupt", 0
+isr_msg_16 db "Coprocessor Fault", 0
+isr_msg_17 db "Alignment Check", 0
+isr_msg_18 db "Machine Check", 0
+isr_msg_19 db "Reserved", 0
+isr_msg_20 db "Reserved", 0
+isr_msg_21 db "Reserved", 0
+isr_msg_22 db "Reserved", 0
+isr_msg_23 db "Reserved", 0
+isr_msg_24 db "Reserved", 0
+isr_msg_25 db "Reserved", 0
+isr_msg_26 db "Reserved", 0
+isr_msg_27 db "Reserved", 0
+isr_msg_28 db "Reserved", 0
+isr_msg_29 db "Reserved", 0
+isr_msg_30 db "Reserved", 0
+isr_msg_31 db "Reserved", 0
+
+; Define exception handlers
+isr_no_err_stub 0
+isr_no_err_stub 1
+isr_no_err_stub 2
+isr_no_err_stub 3
+isr_no_err_stub 4
+isr_no_err_stub 5
+isr_no_err_stub 6
+isr_no_err_stub 7
+isr_err_stub    8
+isr_no_err_stub 9
+isr_err_stub    10
+isr_err_stub    11
+isr_err_stub    12
+isr_err_stub    13
+isr_err_stub    14
+isr_no_err_stub 15
+isr_no_err_stub 16
+isr_err_stub    17
+isr_no_err_stub 18
+isr_no_err_stub 19
+isr_no_err_stub 20
+isr_no_err_stub 21
+isr_no_err_stub 22
+isr_no_err_stub 23
+isr_no_err_stub 24
+isr_no_err_stub 25
+isr_no_err_stub 26
+isr_no_err_stub 27
+isr_no_err_stub 28
+isr_no_err_stub 29
+isr_err_stub    30
+isr_no_err_stub 31
+
+; Define the stub table
+global isr_stub_table
+isr_stub_table:
+%assign i 0 
+%rep    32 
+    dd isr_stub_%+i    
+%assign i i + 1 
+%endrep

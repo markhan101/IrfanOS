@@ -53,3 +53,15 @@ void write_serial(char *msg)
         msg++;
     }
 }
+
+void write_serial_dec(int num)
+{
+    char buffer[32];
+    write_serial(itoa(num, buffer, 10));
+}
+
+void write_serial_hex(int num)
+{
+    char buffer[32];
+    write_serial(itoa(num, buffer, 16));
+}
