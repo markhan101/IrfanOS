@@ -12,6 +12,8 @@
 #define IDT_SIZE 256          // 0..255
 #define IDT_FLAGS 0x8E        // 1(P/Present)00(DPL)0(Always 0) 1110(Gate Type)
 #define GDT_CODE_SEGMENT 0x08 // 0000 1000 (Selector for Code Segment which we defined in GDT)
+#define RING_0_INTERRUPT_GATE 0x8E
+#define RING_3_TRAP_GATE 0xEF
 
 // IRQs
 #define PIC1 0x20 /* IO base address for master PIC */
@@ -67,5 +69,9 @@ void IRQ_CLEAR_MASK(uint8_t IRQline);
 static uint16_t __PIC_GET_IRQ_REQ(int ocw3);
 uint16_t PIC_GET_IRR();
 uint16_t PIC_GET_ISR();
+
+// IRQs
+
+void SET_IRQ_HANDLER(uint8_t IRQ, void(*handler));
 
 #endif // IDT_H

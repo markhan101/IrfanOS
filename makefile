@@ -1,5 +1,7 @@
 #qemu-system-i386 -kernel bin/myos.bin -d int -serial stdio
 #run command
+#debug command
+
 
 CC = i686-elf-gcc
 LD = i686-elf-gcc
@@ -28,8 +30,7 @@ SYS_ASM_SRC = $(SYS_DIR)/gdt.s $(SYS_DIR)/idt.s
 # Object files
 KERNEL_OBJ = $(BIN_DIR)/kernel.o
 DRIVERS_OBJ = $(BIN_DIR)/serial.o $(BIN_DIR)/vga.o
-SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o 
-#$(BIN_DIR)/timer.o
+SYS_OBJ = $(BIN_DIR)/gdt.o $(BIN_DIR)/idt.o $(BIN_DIR)/idts.o $(BIN_DIR)/timer.o
 UTILS_OBJ = $(BIN_DIR)/io.o $(BIN_DIR)/string.o
 BOOT_OBJ = $(BIN_DIR)/boot.o
 
