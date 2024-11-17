@@ -86,7 +86,7 @@ $(BOOT_OBJ): boot.s
 
 # Clean up
 clean:
-	rm -f $(BIN_DIR)/*.o $(BIN_DIR)/$(BIN)
+	rm -f $(BIN_DIR)/*.o $(BIN_DIR)/$(BIN) myos.bin myos.iso
 
 # Run QEMU
 run: all
